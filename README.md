@@ -29,3 +29,10 @@ The trade-off: this library treats inputs as **ages in years before present** (B
 - **Rounding** in `from_scientific` uses `ROUND_HALF_UP`. Floating-point coefficients are rounded to the number of significant digits you request (default 2). If you pass a value like `65432109` with the default, you get `"65 Ma"` — the digits after the second significant figure are discarded.
 - **Bare numbers** without a unit are treated as years BP, so `"1000"` means 1000 years before present, not a calendar year.
 - The unit must be exactly one of `Ga`, `Ma`, `ka`, `a`. Variants like `Myr` or `M` are not accepted.
+
+## Design notes
+
+The window stores values eagerly rather than keeping running aggregates. Running
+sums drift with floating point over long streams, and recomputing from a small
+buffer is cheap enough that the drift is not worth the speed.
+
